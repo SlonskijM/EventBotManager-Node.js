@@ -1,8 +1,8 @@
-import { DataBase } from "../db/db.js";
+import { DataBase } from "../database/database.js";
 import { DataTypes } from "sequelize";
 
 const User = DataBase.define(
-  "user",
+  "User",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -12,16 +12,15 @@ const User = DataBase.define(
     },
     email: { type: DataTypes.STRING, unique: true },
     password: { type: DataTypes.STRING },
-    role: { type: DataTypes.STRING, defaultValue: "ADMIN" },
+    role: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: ["USER"] },
   },
   {
-    freezeTableName: true,
     tableName: "Users",
   },
 );
 
-const Announcement = DataBase.define(
-  "announcement",
+const Bot = DataBase.define(
+  "Bot",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -29,47 +28,44 @@ const Announcement = DataBase.define(
       autoIncrement: true,
       allowNull: false,
     },
-    body_year: {
+    name: { type: DataTypes.STRING, allowNull: false },
+    token: { type: DataTypes.STRING, unique: true, allowNull: false },
+    description: { type: DataTypes.STRING },
+  },
+  {
+    tableName: "Bots",
+  },
+);
+
+User.hasMany(Bot);
+Bot.belongsTo(User);
+
+const Message = DataBase.define(
+  "Message",
+  {
+    id: {
       type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
     },
-    volume: {
-      type: DataTypes.FLOAT,
-    },
+    title: { type: DataTypes.STRING },
+    content: { type: DataTypes.STRING },
     img: {
-      type: DataTypes.JSON,
-      allowNull: false,
-    },
-    advertisementArticle: {
       type: DataTypes.STRING,
     },
-    detailNumber: {
-      type: DataTypes.STRING,
-    },
-    description: {
-      type: DataTypes.STRING,
-    },
-    price: {
-      type: DataTypes.INTEGER,
-    },
-    discount: {
-      type: DataTypes.INTEGER,
-      defaultValue: 1,
-    },
-    partCondition: {
-      type: DataTypes.BOOLEAN,
-    },
-    VIN: {
-      type: DataTypes.STRING,
-    },
+    isDraft: { type: DataTypes.BOOLEAN, defaultValue: false },
   },
   {
-    freezeTableName: true,
-    tableName: "Announcements",
+    tableName: "Messages",
   },
 );
 
-const TypeDetail = DataBase.define(
-  "typeDetail",
+Bot.hasMany(Message);
+Message.belongsTo(Bot);
+
+const Task = DataBase.define(
+  "Task",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -77,188 +73,14 @@ const TypeDetail = DataBase.define(
       autoIncrement: true,
       allowNull: false,
     },
-    name: {
-      type: DataTypes.STRING,
-    },
+    scheduledTimes: { type: DataTypes.ARRAY(DataTypes.DATE), allowNull: false },
   },
   {
-    freezeTableName: true,
-    tableName: "TypeDetails",
+    tableName: "Tasks",
   },
 );
 
-const Car = DataBase.define(
-  "car",
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-      allowNull: false,
-    },
-    name: {
-      type: DataTypes.STRING,
-    },
-  },
-  {
-    freezeTableName: true,
-    tableName: "Cars",
-  },
-);
+Message.hasMany(Task);
+Task.belongsTo(Message);
 
-const Fuel = DataBase.define(
-  "fuel",
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-      allowNull: false,
-    },
-    name: {
-      type: DataTypes.STRING,
-    },
-  },
-  {
-    freezeTableName: true,
-    tableName: "Fuels",
-  },
-);
-
-const Transmission = DataBase.define(
-  "transmission",
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-      allowNull: false,
-    },
-    name: {
-      type: DataTypes.STRING,
-    },
-  },
-  {
-    freezeTableName: true,
-    tableName: "Transmissions",
-  },
-);
-
-const Body = DataBase.define(
-  "body",
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-      allowNull: false,
-    },
-    name: {
-      type: DataTypes.STRING,
-    },
-  },
-  {
-    freezeTableName: true,
-    tableName: "Bodys",
-  },
-);
-
-// wheelAnnouncement
-
-// const WheelAnnouncement = DataBase.define(
-//   "wheelAnnouncement",
-//   {
-//     id: {
-//       type: DataTypes.INTEGER,
-//       primaryKey: true,
-//       autoIncrement: true,
-//       allowNull: false,
-//     },
-//     width: {
-//       type: DataTypes.STRING,
-//     },
-//     height: {
-//       type: DataTypes.STRING,
-//     },
-//     radius: {
-//       type: DataTypes.STRING,
-//     },
-//     state: {
-//       type: DataTypes.BOOLEAN,
-//     },
-//     season: {
-//       type: DataTypes.BOOLEAN,
-//     },
-//     quantity: {
-//       type: DataTypes.NUMBER,
-//     },
-//     year: {
-//       type: DataTypes.NUMBER,
-//     },
-//     article: {
-//       type: DataTypes.STRING,
-//     },
-//     description: {
-//       type: DataTypes.STRING,
-//     },
-//     img: {
-//       type: DataTypes.JSON,
-//     },
-//   },
-//   {
-//     freezeTableName: true,
-//     tableName: "WheelAnnouncements",
-//   },
-// );
-//
-// const WheelBrand = DataBase.define(
-//   "wheelBrand",
-//   {
-//     id: {
-//       type: DataTypes.INTEGER,
-//       primaryKey: true,
-//       autoIncrement: true,
-//       allowNull: false,
-//     },
-//     name: {
-//       type: DataTypes.STRING,
-//     },
-//   },
-//   {
-//     freezeTableName: true,
-//     tableName: "WheelBrands",
-//   },
-// );
-
-const CarType = DataBase.define(
-  "carType",
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-      allowNull: false,
-    },
-    name: {
-      type: DataTypes.STRING,
-    },
-  },
-  {
-    freezeTableName: true,
-    tableName: "CarTypes",
-  },
-);
-
-Body.hasMany(Announcement);
-Announcement.belongsTo(Body);
-
-Transmission.hasMany(Announcement);
-Announcement.belongsTo(Transmission);
-
-Fuel.hasMany(Announcement);
-Announcement.belongsTo(Fuel);
-
-TypeDetail.hasMany(Announcement);
-Announcement.belongsTo(TypeDetail);
-
-export { User, Announcement, TypeDetail, Car, Transmission, Body, Fuel };
+export { User, Bot, Message, Task };
