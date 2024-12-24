@@ -2,7 +2,7 @@ import { DataBase } from "../database/database.js";
 import { DataTypes } from "sequelize";
 
 const User = DataBase.define(
-  "User",
+  "user",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -10,14 +10,50 @@ const User = DataBase.define(
       autoIncrement: true,
       allowNull: false,
     },
-    email: { type: DataTypes.STRING, unique: true },
-    password: { type: DataTypes.STRING },
+    email: { type: DataTypes.STRING, unique: true, allowNull: false },
+    password: { type: DataTypes.STRING, allowNull: false },
+    isActivated: { type: DataTypes.BOOLEAN, defaultValue: false },
+    activationLink: { type: DataTypes.STRING },
     role: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: ["USER"] },
   },
   {
     tableName: "Users",
   },
 );
+
+const TokenSchema = DataBase.define(
+  "token",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: User,
+        key: "id",
+      },
+    },
+    refreshToken: { type: DataTypes.STRING, allowNull: false },
+  },
+  {
+    tableName: "Tokens",
+  },
+);
+
+User.hasOne(TokenSchema, {
+  foreignKey: "userId",
+  as: "token",
+});
+
+TokenSchema.belongsTo(User, {
+  foreignKey: "userId",
+  as: "user",
+});
 
 const Bot = DataBase.define(
   "Bot",
@@ -83,4 +119,4 @@ const Task = DataBase.define(
 Message.hasMany(Task);
 Task.belongsTo(Message);
 
-export { User, Bot, Message, Task };
+export { User, TokenSchema, Bot, Message, Task };
