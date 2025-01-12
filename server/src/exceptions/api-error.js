@@ -12,6 +12,10 @@ export default class ApiError extends Error {
     return new ApiError(401, "Пользователь не авторизован!");
   }
 
+  static InvalidTokenError(message = "Некорректный токен!") {
+    return new ApiError(400, `${message}`);
+  }
+
   static BadRequest(message, errors = []) {
     return new ApiError(400, message, errors);
   }

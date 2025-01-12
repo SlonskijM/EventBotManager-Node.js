@@ -1,12 +1,25 @@
+import BotService from "../services/botService.js";
+
 class BotController {
-  async getAll(req, res) {
+  async create(req, res, next) {
     try {
-    } catch (e) {}
+      const { token } = req.body;
+      const { id } = req.user;
+      const createBot = await BotService.create(token, id);
+      return res.json(createBot);
+    } catch (e) {
+      next(e);
+    }
   }
 
-  async create(req, res) {
+  async getAll(req, res, next) {
     try {
-    } catch (e) {}
+      const { id } = req.user;
+      const allBots = await BotService.getAll(id);
+      return res.json(allBots);
+    } catch (e) {
+      next(e);
+    }
   }
 
   async update(req, res) {

@@ -66,7 +66,7 @@ const Bot = DataBase.define(
     },
     name: { type: DataTypes.STRING, allowNull: false },
     token: { type: DataTypes.STRING, unique: true, allowNull: false },
-    description: { type: DataTypes.STRING },
+    hash: { type: DataTypes.STRING },
   },
   {
     tableName: "Bots",
