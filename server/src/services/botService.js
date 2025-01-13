@@ -21,6 +21,12 @@ class BotService {
   async getAll(id) {
     return await Bot.findAll({ where: { userId: id } });
   }
+
+  async delete(id, user) {
+    const bot = await Bot.findOne({ where: { id, userId: user.id } });
+    if (!bot) throw ApiError.BadRequest("Бот с таким id не существует!");
+    return await Bot.destroy({ where: { id } });
+  }
 }
 
 export default new BotService();

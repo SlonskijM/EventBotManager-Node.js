@@ -1,4 +1,5 @@
 import BotService from "../services/botService.js";
+import { json } from "express";
 
 class BotController {
   async create(req, res, next) {
@@ -27,9 +28,15 @@ class BotController {
     } catch (e) {}
   }
 
-  async delete(req, res) {
+  async delete(req, res, next) {
     try {
-    } catch (e) {}
+      const id = req.params.id;
+      const user = req.user;
+      const del = await BotService.delete(id, user);
+      return res.json(del);
+    } catch (e) {
+      next(e);
+    }
   }
 }
 

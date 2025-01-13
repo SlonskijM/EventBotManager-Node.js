@@ -7,6 +7,6 @@ const router = Router();
 router.get("/", authMiddleware, BotController.getAll);
 router.post("/", authMiddleware, BotController.create);
 router.put("/:id", BotController.update);
-router.delete("/:id", BotController.delete);
+router.delete("/:id", authMiddleware, BotController.delete);
 
 export default router;
