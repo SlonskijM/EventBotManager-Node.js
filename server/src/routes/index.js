@@ -8,7 +8,7 @@ const router = Router();
 
 router.use("/user", userRoutes);
 router.use("/bot", botRoutes);
-router.use("/message", messageRoutes);
+router.use("/bot/:botId", messageRoutes);
 router.use("/task", taskRoutes);
 
 export default router;
